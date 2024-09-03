@@ -8,10 +8,10 @@ type SelectOptionType<T> = {
   value: T;
 };
 
-interface SelectProps extends Omit<HTMLSelectAttributes, 'size'> {
+interface SelectProps<T> extends Omit<HTMLSelectAttributes, 'size'> {
   children?: Snippet;
-  items?: SelectOptionType<any>[];
-  value?: any;
+  items?: SelectOptionType<T>[];
+  value?: T;
   underline?: boolean;
   size?: 'sm' | 'md' | 'lg';
   placeholder?: string;
