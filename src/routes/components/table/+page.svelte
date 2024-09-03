@@ -288,6 +288,35 @@
   {/snippet}
 </CodeWrapper>
 
+<H2>Sorting by column</H2>
+<CodeWrapper>
+  <Table {items}>
+    <TableHead>
+      <TableHeadCell sort={(a, b) => a.id - b.id}>ID</TableHeadCell>
+      <TableHeadCell sort={(a, b) => a.maker.localeCompare(b.maker)} defaultSort>Maker</TableHeadCell>
+      <TableHeadCell sort={(a, b) => a.type.localeCompare(b.type)}>Type</TableHeadCell>
+      <TableHeadCell sort={(a, b) => a.make - b.make} defaultDirection="desc">Make</TableHeadCell>
+      <TableHeadCell><span class="sr-only">Edit</span></TableHeadCell>
+    </TableHead>
+    <TableBody>
+      {#snippet row({ item }: { item: typeof items[number] })}
+        <TableBodyRow>
+          <TableBodyCell>{item.id}</TableBodyCell>
+          <TableBodyCell>{item.maker}</TableBodyCell>
+          <TableBodyCell>{item.type}</TableBodyCell>
+          <TableBodyCell>{item.make}</TableBodyCell>
+          <TableBodyCell>
+            <a href="/components/table" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Edit</a>
+          </TableBodyCell>
+        </TableBodyRow>
+      {/snippet}
+    </TableBody>
+  </Table>
+  {#snippet codeblock()}
+    <HighlightCompo code={modules['./md/sort-columns.md'] as string} />
+  {/snippet}
+</CodeWrapper>
+
 <H2>Table head</H2>
 <CodeWrapper>
   <Table>
