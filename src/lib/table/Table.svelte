@@ -4,7 +4,7 @@
   import { twMerge, twJoin } from 'tailwind-merge';
   import { setContext } from 'svelte';
   import { type TableColrType, type TableCtxType } from '.';
-  import { writable, type Writable } from 'svelte/store';
+  import { writable } from 'svelte/store';
 
   interface Props extends HTMLTableAttributes {
     children: Snippet;

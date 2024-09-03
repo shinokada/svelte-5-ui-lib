@@ -1,5 +1,5 @@
 <script lang="ts" generics="T">
-  import { getContext, type Snippet } from 'svelte';
+  import { getContext, onMount, type Snippet } from 'svelte';
   import type { HTMLAttributes } from 'svelte/elements';
   import type { TableCtxType } from '.';
 
