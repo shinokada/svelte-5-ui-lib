@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" generics="T">
   import type { Snippet } from 'svelte';
   import { twMerge } from 'tailwind-merge';
   import { getContext } from 'svelte';
@@ -13,7 +13,7 @@
 
   let { children, class: className, defaultRow = true, ...restProps }: Props = $props();
 
-  const tableCtx: TableCtxType = getContext('tableCtx');
+  const tableCtx: TableCtxType<T> = getContext('tableCtx');
   const color = tableCtx.color;
   const noborder: boolean = tableCtx.noborder;
   const striped: boolean = tableCtx.striped;
