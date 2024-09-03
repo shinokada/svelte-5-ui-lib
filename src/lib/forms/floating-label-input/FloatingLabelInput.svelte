@@ -21,6 +21,7 @@
 ## Props
 @prop children
 @prop id = idGenerator()
+@prop value = $bindable()
 @prop aria_describedby
 @prop style = 'standard'
 @prop size = 'default'
