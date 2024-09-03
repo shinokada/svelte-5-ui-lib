@@ -108,7 +108,8 @@
 @prop header
 @prop footer
 @prop divClass = 'relative overflow-x-auto shadow-md sm:rounded-lg'
-@prop inputValue = $bindable()
+@prop inputValue = $bindable('')
+@prop placeholder
 @prop striped
 @prop hoverable
 @prop customColor = ''
@@ -120,5 +121,7 @@
 @prop svgClass = 'w-5 h-5 text-gray-500 dark:text-gray-400'
 @prop tableClass = 'w-full text-left text-sm'
 @prop class: className
+@prop items
+@prop filter
 @prop ...restProps
 -->

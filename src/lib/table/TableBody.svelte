@@ -33,5 +33,6 @@
 ## Props
 @prop children
 @prop class: className
+@prop row
 @prop ...restProps
 -->

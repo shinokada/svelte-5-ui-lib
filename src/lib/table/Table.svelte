@@ -98,6 +98,8 @@
 [Go to docs](https://svelte-5-ui-lib.codewithshin.com/)
 ## Props
 @prop children
+@prop header
+@prop footer
 @prop divClass = 'relative overflow-x-auto'
 @prop striped
 @prop hoverable
@@ -105,5 +107,14 @@
 @prop shadow
 @prop color = 'default'
 @prop customeColor
+@prop innerDivClass = 'p-4'
+@prop inputClass
+@prop searchClass = 'relative mt-1'
+@prop searchPlaceholder
+@prop svgDivClass
+@prop svgClass = 'w-5 h-5 text-gray-500 dark:text-gray-400'
+@prop items
+@prop searchTerm = $bindable('')
+@prop filter
 @prop ...restProps
 -->
