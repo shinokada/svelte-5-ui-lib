@@ -8,7 +8,7 @@ type SelectOptionType<T> = {
   value: T;
 };
 
-interface SelectProps<T> extends Omit<HTMLSelectAttributes, 'size'> {
+interface SelectProps<T extends string | number> extends Omit<HTMLSelectAttributes, 'size'> {
   children?: Snippet;
   items?: SelectOptionType<T>[];
   value?: T;
@@ -17,10 +17,10 @@ interface SelectProps<T> extends Omit<HTMLSelectAttributes, 'size'> {
   placeholder?: string;
 }
 
-interface MultiSelectProps<T> extends HTMLAttributes<HTMLDivElement> {
+interface MultiSelectProps<T extends string | number> extends HTMLAttributes<HTMLDivElement> {
   children?: Snippet;
   items?: SelectOptionType<T>[];
-  value?: (string | number)[];
+  value?: T[];
   size?: 'sm' | 'md' | 'lg';
   dropdownClass?: string;
   placeholder?: string;
