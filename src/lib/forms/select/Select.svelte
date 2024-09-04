@@ -12,8 +12,8 @@
   {/if}
 
   {#if items}
-    {#each items as { value, name }}
-      <option {value}>{name}</option>
+    {#each items as { value, name, disabled }}
+      <option {value} {disabled}>{name}</option>
     {/each}
   {/if}
 
