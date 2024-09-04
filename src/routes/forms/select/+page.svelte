@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Select, Label, Radio, Helper, Dropdown, DropdownUl, DropdownLi, uiHelpers, ButtonGroup, Button } from '$lib';
-  import { ChevronDownOutline } from 'flowbite-svelte-icons';
+  import { CaretDownSolid, CaretUpSolid, ChevronDownOutline } from 'flowbite-svelte-icons';
   import HighlightCompo from '../../utils/HighlightCompo.svelte';
   import CodeWrapper from '../../utils/CodeWrapper.svelte';
   import H1 from '../../utils/H1.svelte';
@@ -10,6 +10,11 @@
   import Germany from '../../utils/icons/Germany.svelte';
   import Italy from '../../utils/icons/Italy.svelte';
   import China from '../../utils/icons/China.svelte';
+  import { H3 } from '../../utils/heading';
+  import MultiSelect from '$lib/forms/select/MultiSelect.svelte';
+  import P from '$lib/typography/paragraph/P.svelte';
+  import Kbd from '$lib/kbd/Kbd.svelte';
+  import Badge from '$lib/badge/Badge.svelte';
 
   const modules = import.meta.glob('./md/*.md', {
     query: '?raw',
@@ -178,5 +183,51 @@
   </Select>
   {#snippet codeblock()}
     <HighlightCompo code={modules['./md/custom-options.md'] as string} />
+  {/snippet}
+</CodeWrapper>
+
+<H2>MultiSelect</H2>
+
+<H3>Basic example</H3>
+<CodeWrapper>
+  <MultiSelect items={states} placeholder="Placeholder text" />
+  {#snippet codeblock()}
+    <HighlightCompo code={modules['./md/default-multiselect.md'] as string} />
+  {/snippet}
+</CodeWrapper>
+
+<H3>Preselect values</H3>
+<CodeWrapper>
+  <MultiSelect items={states} value={['CA', 'FL']} />
+  {#snippet codeblock()}
+    <HighlightCompo code={modules['./md/multiselect-preselect.md'] as string} />
+  {/snippet}
+</CodeWrapper>
+
+<H3>Keyboard Usage</H3>
+<P>
+  Some keyboard interaction was implemented. Use <Kbd class="inline-flex items-center px-2 py-1.5"><CaretUpSolid size="xs" /><span class="sr-only">Arrow key up</span></Kbd>/<Kbd class="inline-flex items-center px-2 py-1.5"><CaretDownSolid size="xs" /><span class="sr-only">Arrow key down</span></Kbd>
+  to highlight an item, then press <Kbd class="inline-flex items-center px-2 py-1.5">Enter</Kbd> or
+  <Kbd class="inline-flex items-center px-2 py-1.5">SpaceBar</Kbd> to toggle the selected item. Press
+  <Kbd class="inline-flex items-center px-2 py-1.5">Esc</Kbd> to close the selection pop-up.
+</P>
+
+<H3>Customization</H3>
+<CodeWrapper>
+  <MultiSelect items={[
+    { value: 'us', name: 'United States', color: 'indigo' },
+    { value: 'ca', name: 'Canada', color: 'green' },
+    { value: 'fr', name: 'France', color: 'blue' },
+    { value: 'jp', name: 'Japan', color: 'red' },
+    { value: 'en', name: 'England', color: 'yellow' }
+  ] as const}>
+    {#snippet badge({ item, clear })}
+      <Badge color={item.color} large dismissable params={{ duration: 100 }} onclick={clear}>
+        {item.name}
+      </Badge>
+    {/snippet}
+  </MultiSelect>
+  {#snippet codeblock()}
+    <HighlightCompo code={modules['./md/custom-multiselect.md'] as string} />
   {/snippet}
 </CodeWrapper>
