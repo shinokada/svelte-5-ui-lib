@@ -17,10 +17,10 @@ interface SelectProps<T extends string | number> extends Omit<HTMLSelectAttribut
   placeholder?: string;
 }
 
-interface MultiSelectProps<T extends string | number> extends Omit<HTMLAttributes<HTMLSelectElement>, "children" | "onclick"> {
-  children?: Snippet<[{ item: SelectOptionType<T>, clear: () => void }]>;
-  items: SelectOptionType<T>[];
-  value?: T[];
+interface MultiSelectProps<V extends string | number, T extends SelectOptionType<V>> extends Omit<HTMLAttributes<HTMLSelectElement>, "children" | "onclick"> {
+  children?: Snippet<[{ item: T, clear: () => void }]>;
+  items: T[];
+  value?: V[];
   size?: 'sm' | 'md' | 'lg';
   dropdownClass?: string;
   placeholder?: string;

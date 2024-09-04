@@ -1,11 +1,11 @@
-<script lang="ts" generics="T extends string | number">
+<script lang="ts" generics="V extends string | number, T extends SelectOptionType<V>">
   import { twMerge } from "tailwind-merge";
   import { multiSelect as selectCls, type MultiSelectProps as Props, type SelectOptionType } from ".";
   import { createEventDispatcher } from "svelte";
   import Badge from "$lib/badge/Badge.svelte";
   import CloseButton from "$lib/utils/CloseButton.svelte";
 
-  let { children = defaultChildren, items, value = $bindable([]), size = 'md', dropdownClass, placeholder, oninput, onclick, class: className, ...restProps }: Props<T> = $props();
+  let { children = defaultChildren, items, value = $bindable([]), size = 'md', dropdownClass, placeholder, oninput, onclick, class: className, ...restProps }: Props<V, T> = $props();
 	let show = $state(false);
 	let activeIndex: number | null = $state(null);
 	let activeItem = $derived(activeIndex !== null ? items[((activeIndex % items?.length) + items.length) % items.length] : null)
@@ -19,7 +19,7 @@
 	const itemsSelectedClass = 'bg-gray-100 text-black font-semibold hover:text-black dark:text-white dark:bg-gray-600 dark:hover:text-white';
 	const activeItemClass = 'bg-primary-100 text-primary-500 dark:bg-primary-500 dark:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-500 hover:text-primary-600 dark:hover:text-primary-100';
 	
-	function selectOption(select: SelectOptionType<T>) {
+	function selectOption(select: T) {
 		if(value.includes(select.value)) {
 			value = value.filter(v => v !== select.value);
 		} else {
@@ -27,7 +27,7 @@
 		}
 		dispatcher('change');
 	}
-	function clearOption(select: SelectOptionType<T>) {
+	function clearOption(select: T) {
 		if(value.includes(select.value)) {
 			value = value.filter(v => v !== select.value);
 			dispatcher('change');
@@ -86,7 +86,7 @@
 	{/each}
 </select>
 
-{#snippet defaultChildren({ item, clear }: { item: SelectOptionType<T>, clear: () => void })}
+{#snippet defaultChildren({ item, clear }: { item: T, clear: () => void })}
 	<Badge color='gray' large={size === 'lg'} dismissable params={{ duration: 100 }} onclick={clear}>
 		{item.name}
 	</Badge>
