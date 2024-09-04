@@ -18,7 +18,7 @@ interface SelectProps<T extends string | number> extends Omit<HTMLSelectAttribut
 }
 
 interface MultiSelectProps<V extends string | number, T extends SelectOptionType<V>> extends Omit<HTMLAttributes<HTMLSelectElement>, "children" | "onclick"> {
-  children?: Snippet<[{ item: T, clear: () => void }]>;
+  badge?: Snippet<[{ item: T, clear: () => void }]>;
   items: T[];
   value?: V[];
   size?: 'sm' | 'md' | 'lg';

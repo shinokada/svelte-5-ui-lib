@@ -5,7 +5,7 @@
   import Badge from "$lib/badge/Badge.svelte";
   import CloseButton from "$lib/utils/CloseButton.svelte";
 
-  let { children = defaultChildren, items, value = $bindable([]), size = 'md', dropdownClass, placeholder, oninput, onclick, class: className, ...restProps }: Props<V, T> = $props();
+  let { badge = defaultBadge, items, value = $bindable([]), size = 'md', dropdownClass, placeholder, oninput, onclick, class: className, ...restProps }: Props<V, T> = $props();
 	let show = $state(false);
 	let activeIndex: number | null = $state(null);
 	let activeItem = $derived(activeIndex !== null ? items[((activeIndex % items?.length) + items.length) % items.length] : null)
@@ -86,7 +86,7 @@
 	{/each}
 </select>
 
-{#snippet defaultChildren({ item, clear }: { item: T, clear: () => void })}
+{#snippet defaultBadge({ item, clear }: { item: T, clear: () => void })}
 	<Badge color='gray' large={size === 'lg'} dismissable params={{ duration: 100 }} onclick={clear}>
 		{item.name}
 	</Badge>
@@ -98,7 +98,7 @@
 	{/if}
 	<span class='flex gap-2 flex-wrap'>
 		{#each selectedItems as item (item.value)}
-			{@render children({ item, clear: () => clearOption(item) })}
+			{@render badge({ item, clear: () => clearOption(item) })}
 		{/each}
 	</span>
 	<div class='flex ms-auto gap-2 items-center'>
