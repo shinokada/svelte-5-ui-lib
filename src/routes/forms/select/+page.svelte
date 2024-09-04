@@ -65,8 +65,8 @@
   });
 
   const sizes = ['sm', 'md', 'lg'];
-  let selectSize: Select['size'] = $state('md');
-  const sizeDisplay: Record<Select['size'], string> = {
+  let selectSize: Select<any>['size'] = $state('md');
+  const sizeDisplay: Record<Select<any>['size'], string> = {
     sm: 'Small',
     md: 'Medium',
     lg: 'Large'
@@ -198,7 +198,7 @@
 
 <H3>Preselect values</H3>
 <CodeWrapper>
-  <MultiSelect items={states} value={['CA', 'FL'] as string[]} />
+  <MultiSelect items={states} value={['CA', 'FL']} />
   {#snippet codeblock()}
     <HighlightCompo code={modules['./md/multiselect-preselect.md'] as string} />
   {/snippet}
@@ -206,7 +206,7 @@
 
 <H3>Disabled MultiSelect</H3>
 <CodeWrapper>
-  <MultiSelect items={states} value={['CA', 'FL'] as string[]} disabled />
+  <MultiSelect items={states} value={['CA', 'FL']} disabled />
   {#snippet codeblock()}
     <HighlightCompo code={modules['./md/disabled-multiselect.md'] as string} />
   {/snippet}
@@ -220,7 +220,7 @@
     { value: 'fr', name: 'France', disabled: true },
     { value: 'jp', name: 'Japan' },
     { value: 'en', name: 'England' }
-  ]} value={['fr', 'en'] as string[]} />
+  ]} value={['fr', 'en']} />
   {#snippet codeblock()}
     <HighlightCompo code={modules['./md/disabled-options-multiselect.md'] as string} />
   {/snippet}

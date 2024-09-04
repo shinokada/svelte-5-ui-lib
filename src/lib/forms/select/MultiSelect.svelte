@@ -1,4 +1,4 @@
-<script lang="ts" generics="V extends string | number, T extends SelectOptionType<V>">
+<script lang="ts" generics="V, T extends SelectOptionType<V>">
   import { twMerge } from "tailwind-merge";
   import { multiSelect as selectCls, type MultiSelectProps as Props, type SelectOptionType } from ".";
   import { createEventDispatcher } from "svelte";
@@ -19,7 +19,7 @@
 	const itemsSelectedClass = 'bg-gray-100 text-black font-semibold hover:text-black dark:text-white dark:bg-gray-600 dark:hover:text-white';
 	const activeItemClass = 'bg-primary-100 text-primary-500 dark:bg-primary-500 dark:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-500 hover:text-primary-600 dark:hover:text-primary-100';
 	const disabledItemClass = 'text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-not-allowed';
-	
+
 	function selectOption(select: T) {
 		if(disabled || select.disabled) return;
 		if(value.includes(select.value)) {
@@ -43,7 +43,7 @@
 			dispatcher('change');
 		}
 	}
-	
+
 	// keyboard navigation
 	function onkeydown(e: KeyboardEvent) {
 		switch (e.key) {

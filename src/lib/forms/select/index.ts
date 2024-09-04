@@ -9,7 +9,7 @@ type SelectOptionType<T> = {
   disabled?: boolean;
 };
 
-interface SelectProps<T extends string | number> extends Omit<HTMLSelectAttributes, 'size'> {
+interface SelectProps<T> extends Omit<HTMLSelectAttributes, 'size'> {
   children?: Snippet;
   items?: SelectOptionType<T>[];
   value?: T;
@@ -18,7 +18,7 @@ interface SelectProps<T extends string | number> extends Omit<HTMLSelectAttribut
   placeholder?: string;
 }
 
-interface MultiSelectProps<V extends string | number, T extends SelectOptionType<V>> extends Omit<HTMLAttributes<HTMLSelectElement>, "children" | "onclick"> {
+interface MultiSelectProps<V, T extends SelectOptionType<V>> extends Omit<HTMLAttributes<HTMLSelectElement>, "children" | "onclick"> {
   badge?: Snippet<[{ item: T, clear: () => void, disabled: boolean }]>;
   items: T[];
   value?: V[];

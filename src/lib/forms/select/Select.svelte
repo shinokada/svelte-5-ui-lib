@@ -1,5 +1,5 @@
 <script lang="ts" generics="T">
-  import { type SelectProps as Props, select as selectCls } from '.';
+  import { type SelectProps as Props, select as selectCls, type SelectOptionType } from '.';
 
   let { children, items, value = $bindable(), underline, size = 'md', class: className, placeholder = 'Choose option ...', ...restProps }: Props<T> = $props();
 
