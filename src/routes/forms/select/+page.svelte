@@ -198,9 +198,31 @@
 
 <H3>Preselect values</H3>
 <CodeWrapper>
-  <MultiSelect items={states} value={['CA', 'FL']} />
+  <MultiSelect items={states} value={['CA', 'FL'] as string[]} />
   {#snippet codeblock()}
     <HighlightCompo code={modules['./md/multiselect-preselect.md'] as string} />
+  {/snippet}
+</CodeWrapper>
+
+<H3>Disabled MultiSelect</H3>
+<CodeWrapper>
+  <MultiSelect items={states} value={['CA', 'FL'] as string[]} disabled />
+  {#snippet codeblock()}
+    <HighlightCompo code={modules['./md/disabled-multiselect.md'] as string} />
+  {/snippet}
+</CodeWrapper>
+
+<H3>Disabled options</H3>
+<CodeWrapper>
+  <MultiSelect items={[
+    { value: 'us', name: 'United States', disabled: true },
+    { value: 'ca', name: 'Canada' },
+    { value: 'fr', name: 'France', disabled: true },
+    { value: 'jp', name: 'Japan' },
+    { value: 'en', name: 'England' }
+  ]} value={['fr', 'en'] as string[]} />
+  {#snippet codeblock()}
+    <HighlightCompo code={modules['./md/disabled-options-multiselect.md'] as string} />
   {/snippet}
 </CodeWrapper>
 

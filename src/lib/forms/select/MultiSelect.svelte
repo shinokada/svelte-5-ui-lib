@@ -5,7 +5,7 @@
   import Badge from "$lib/badge/Badge.svelte";
   import CloseButton from "$lib/utils/CloseButton.svelte";
 
-  let { badge = defaultBadge, items, value = $bindable([]), size = 'md', dropdownClass, placeholder, oninput, onclick, class: className, ...restProps }: Props<V, T> = $props();
+  let { badge = defaultBadge, items, value = $bindable([]), size = 'md', dropdownClass, placeholder, disabled = false, oninput, onclick, class: className, ...restProps }: Props<V, T> = $props();
 	let show = $state(false);
 	let activeIndex: number | null = $state(null);
 	let activeItem = $derived(activeIndex !== null ? items[((activeIndex % items?.length) + items.length) % items.length] : null)
@@ -13,13 +13,15 @@
 
 	const dispatcher = createEventDispatcher();
 
-	const multiSelectClass = 'relative border border-gray-300 flex items-center rounded-lg gap-2 dark:border-gray-600 focus-within:ring-1 focus-within:border-primary-500 ring-primary-500 dark:focus-within:border-primary-500 dark:ring-primary-500 focus-visible:outline-none';
+	const multiSelectClass = $derived(twMerge('relative border border-gray-300 flex items-center rounded-lg gap-2 dark:border-gray-600 ring-primary-500 dark:focus-within:border-primary-500 dark:ring-primary-500 focus-visible:outline-none', selectCls({ size, disabled }), className));
 	let multiSelectDropdown = $derived(twMerge('absolute z-50 p-3 flex flex-col gap-1 max-h-64 bg-white border border-gray-300 dark:bg-gray-700 dark:border-gray-600 start-0 top-[calc(100%+1rem)] rounded-lg cursor-pointer overflow-y-scroll w-full', dropdownClass));
 	const itemsClass = 'py-2 px-3 rounded-lg text-gray-600 hover:text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-gray-600';
 	const itemsSelectedClass = 'bg-gray-100 text-black font-semibold hover:text-black dark:text-white dark:bg-gray-600 dark:hover:text-white';
 	const activeItemClass = 'bg-primary-100 text-primary-500 dark:bg-primary-500 dark:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-500 hover:text-primary-600 dark:hover:text-primary-100';
+	const disabledItemClass = 'text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-not-allowed';
 	
 	function selectOption(select: T) {
+		if(disabled || select.disabled) return;
 		if(value.includes(select.value)) {
 			value = value.filter(v => v !== select.value);
 		} else {
@@ -28,14 +30,16 @@
 		dispatcher('change');
 	}
 	function clearOption(select: T) {
+		if(disabled || select.disabled) return;
 		if(value.includes(select.value)) {
 			value = value.filter(v => v !== select.value);
 			dispatcher('change');
 		}
 	}
 	function clearAll() {
+		if(disabled) return;
 		if(value.length > 0) {
-			value = [];
+			value = selectedItems.filter(i => i.disabled).map(i => i.value);
 			dispatcher('change');
 		}
 	}
@@ -49,6 +53,7 @@
 			}
 			case 'Enter':
 			case ' ': {
+				if(disabled) break;
 				if(!show) {
 					show = true;
 					activeIndex = 0;
@@ -70,6 +75,7 @@
 		e.preventDefault();
 	}
 	function handleArrowKey(offset: number) {
+		if(disabled) return;
 		if(!show || activeIndex === null) {
 			show = true;
 			activeIndex = 0;
@@ -86,19 +92,19 @@
 	{/each}
 </select>
 
-{#snippet defaultBadge({ item, clear }: { item: T, clear: () => void })}
+{#snippet defaultBadge({ item, clear, disabled }: { item: T, clear: () => void, disabled: boolean })}
 	<Badge color='gray' large={size === 'lg'} dismissable params={{ duration: 100 }} onclick={clear}>
 		{item.name}
 	</Badge>
 {/snippet}
 
-<div onclick={() => show = !show} onfocusout={() => show = false} {onkeydown} tabindex="0" role="listbox" class={twMerge(multiSelectClass, selectCls({ size }), className)}>
+<div onclick={() => show = !disabled && !show} onfocusout={() => show = false} {onkeydown} tabindex="0" role="listbox" class={multiSelectClass}>
 	{#if !selectedItems.length}
 		<span class='text-gray-400'>{placeholder}</span>
 	{/if}
 	<span class='flex gap-2 flex-wrap'>
 		{#each selectedItems as item (item.value)}
-			{@render badge({ item, clear: () => clearOption(item) })}
+			{@render badge({ item, clear: () => clearOption(item), disabled: item.disabled || disabled })}
 		{/each}
 	</span>
 	<div class='flex ms-auto gap-2 items-center'>
@@ -114,7 +120,7 @@
 	{#if show}
 		<div onclick={e => (e.stopPropagation(), onclick?.(e))} role="presentation" class={multiSelectDropdown}>
 			{#each items as item (item.value)}
-				<div onclick={() => selectOption(item)} role="presentation" class={twMerge(itemsClass, selectedItems.includes(item) && itemsSelectedClass, activeItem === item && activeItemClass)}>
+				<div onclick={() => selectOption(item)} role="presentation" class={twMerge(itemsClass, selectedItems.includes(item) && itemsSelectedClass, activeItem === item && activeItemClass, item.disabled && disabledItemClass)}>
 					{item.name}
 				</div>
 			{/each}
