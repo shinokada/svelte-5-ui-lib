@@ -18,3 +18,21 @@ export const select = tv({
     size: 'md'
   }
 });
+
+export const multiSelect = tv({
+  variants: {
+    size: {
+      sm: 'px-2 py-1 min-h-[2.4rem]',
+      md: 'px-3 py-1 min-h-[2.7rem]',
+      lg: 'px-4 py-2 min-h-[3.2rem]'
+    },
+    disabled: {
+      true: 'opacity-50 cursor-not-allowed',
+      false: 'focus-within:ring-1 focus-within:border-primary-500 dark:focus-within:border-primary-500'
+    }
+  },
+  defaultVariants: {
+    size: 'md',
+    disabled: false
+  }
+});

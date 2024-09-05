@@ -306,6 +306,10 @@
       "types": "./dist/forms/search/Search.svelte.d.ts",
       "svelte": "./dist/forms/search/Search.svelte"
     },
+    "./MultiSelect.svelte": {
+      "types": "./dist/forms/select/MultiSelect.svelte.d.ts",
+      "svelte": "./dist/forms/select/MultiSelect.svelte"
+    },
     "./Select.svelte": {
       "types": "./dist/forms/select/Select.svelte.d.ts",
       "svelte": "./dist/forms/select/Select.svelte"
