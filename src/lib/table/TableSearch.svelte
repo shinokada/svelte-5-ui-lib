@@ -1,13 +1,19 @@
-<script lang="ts">
+<script lang="ts" generics="T">
   import type { Snippet } from 'svelte';
   import { twMerge } from 'tailwind-merge';
   import { setContext } from 'svelte';
   import type { HTMLTableAttributes } from 'svelte/elements';
+  import type { TableCtxType } from '.';
+  import { writable, type Writable } from 'svelte/store';
 
-  type TableSearchType = {
+  type TableSearchType<T> = {
     striped?: boolean;
     hoverable?: boolean;
     color?: string;
+    items: Writable<T[] | undefined>;
+    searchTerm: Writable<string>;
+    filter: Writable<((item: T, searchTerm: string) => boolean) | undefined>;
+    sorter: Writable<{sort: (a: T, b: T) => number, direction: -1 | 1, id: string} | undefined>;
   };
   interface Props extends HTMLTableAttributes {
     children?: Snippet;
@@ -15,6 +21,7 @@
     footer?: Snippet;
     divClass?: string;
     inputValue?: string;
+    placeholder?: string;
     striped?: boolean;
     hoverable?: boolean;
     customColor?: string;
@@ -26,9 +33,11 @@
     svgClass?: string;
     tableClass?: string;
     class?: string;
+    items?: T[];
+    filter?: (item: T, searchTerm: string) => boolean;
   }
 
-  let { children, header, footer, divClass = 'relative overflow-x-auto shadow-md sm:rounded-lg', inputValue = $bindable(), striped, hoverable, customColor = '', color = 'default', innerDivClass = 'p-4', inputClass, searchClass = 'relative mt-1', svgDivClass, svgClass = 'w-5 h-5 text-gray-500 dark:text-gray-400', tableClass = 'w-full text-left text-sm', class: className, ...restProps }: Props = $props();
+  let { children, header, footer, divClass = 'relative overflow-x-auto shadow-md sm:rounded-lg', inputValue = $bindable(''), placeholder, striped, hoverable, customColor = '', color = 'default', innerDivClass = 'p-4', inputClass, searchClass = 'relative mt-1', svgDivClass, svgClass = 'w-5 h-5 text-gray-500 dark:text-gray-400', tableClass = 'w-full text-left text-sm', class: className, items, filter, ...restProps }: Props = $props();
 
   let inputCls = twMerge('bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 p-2.5 ps-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', inputClass);
   let svgDivCls = twMerge('absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none', svgDivClass);
@@ -44,10 +53,23 @@
     pink: 'text-pink-100 dark:text-pink-100',
     custom: customColor
   };
-  const tableSearchCtx: TableSearchType = {
+  
+  let itemStore: TableCtxType<T>["items"] = writable(items);
+  let searchTermStore: TableCtxType<T>["searchTerm"] = writable(inputValue);
+  let filterStore: TableCtxType<T>["filter"] = writable(filter);
+  let sorterStore: TableCtxType<T>["sorter"] = writable(undefined);
+  $effect(() => itemStore.set(items));
+  $effect(() => searchTermStore.set(inputValue));
+  $effect(() => filterStore.set(filter));
+
+  const tableSearchCtx: TableSearchType<T> = {
     striped,
     hoverable,
-    color
+    color,
+    items: itemStore,
+    searchTerm: searchTermStore,
+    filter: filterStore,
+    sorter: sorterStore
   };
 
   setContext('tableCtx', tableSearchCtx);
@@ -62,7 +84,7 @@
           <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
         </svg>
       </div>
-      <input bind:value={inputValue} type="text" id="table-search" class={inputCls} />
+      <input bind:value={inputValue} {placeholder} type="text" id="table-search" class={inputCls} />
     </div>
     {#if header}
       {@render header()}
@@ -86,7 +108,8 @@
 @prop header
 @prop footer
 @prop divClass = 'relative overflow-x-auto shadow-md sm:rounded-lg'
-@prop inputValue = $bindable()
+@prop inputValue = $bindable('')
+@prop placeholder
 @prop striped
 @prop hoverable
 @prop customColor = ''
@@ -98,5 +121,7 @@
 @prop svgClass = 'w-5 h-5 text-gray-500 dark:text-gray-400'
 @prop tableClass = 'w-full text-left text-sm'
 @prop class: className
+@prop items
+@prop filter
 @prop ...restProps
 -->

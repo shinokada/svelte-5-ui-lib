@@ -9,8 +9,6 @@
     { id: 4, maker: 'Saab', type: 'IJK', make: 2020 }
   ];
 
-  let filteredItems = $derived(items.filter((item) => item.maker.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1));
-
   import { slide } from 'svelte/transition';
 
   const items2 = [
@@ -270,7 +268,7 @@
 
 <H2>Search input</H2>
 <CodeWrapper>
-  <TableSearch placeholder="Search by maker name" hoverable={true} bind:inputValue={searchTerm}>
+  <Table {items} searchPlaceholder="Search by maker name" hoverable={true} filter={(item, searchTerm) => item.maker.toLowerCase().includes(searchTerm.toLowerCase())} bind:searchTerm>
     <TableHead>
       <TableHeadCell>ID</TableHeadCell>
       <TableHeadCell>Maker</TableHeadCell>
@@ -278,18 +276,47 @@
       <TableHeadCell>Make</TableHeadCell>
     </TableHead>
     <TableBody class="divide-y">
-      {#each filteredItems as item}
+      {#snippet row({ item }: { item: typeof items[number] })}
         <TableBodyRow>
           <TableBodyCell>{item.id}</TableBodyCell>
           <TableBodyCell>{item.maker}</TableBodyCell>
           <TableBodyCell>{item.type}</TableBodyCell>
           <TableBodyCell>{item.make}</TableBodyCell>
         </TableBodyRow>
-      {/each}
+      {/snippet}
     </TableBody>
-  </TableSearch>
+  </Table>
   {#snippet codeblock()}
     <HighlightCompo code={modules['./md/search-input.md'] as string} />
+  {/snippet}
+</CodeWrapper>
+
+<H2>Sorting by column</H2>
+<CodeWrapper>
+  <Table {items}>
+    <TableHead>
+      <TableHeadCell sort={(a, b) => a.id - b.id}>ID</TableHeadCell>
+      <TableHeadCell sort={(a, b) => a.maker.localeCompare(b.maker)} defaultSort>Maker</TableHeadCell>
+      <TableHeadCell sort={(a, b) => a.type.localeCompare(b.type)}>Type</TableHeadCell>
+      <TableHeadCell sort={(a, b) => a.make - b.make} defaultDirection="desc">Make</TableHeadCell>
+      <TableHeadCell><span class="sr-only">Edit</span></TableHeadCell>
+    </TableHead>
+    <TableBody>
+      {#snippet row({ item }: { item: typeof items[number] })}
+        <TableBodyRow>
+          <TableBodyCell>{item.id}</TableBodyCell>
+          <TableBodyCell>{item.maker}</TableBodyCell>
+          <TableBodyCell>{item.type}</TableBodyCell>
+          <TableBodyCell>{item.make}</TableBodyCell>
+          <TableBodyCell>
+            <a href="/components/table" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Edit</a>
+          </TableBodyCell>
+        </TableBodyRow>
+      {/snippet}
+    </TableBody>
+  </Table>
+  {#snippet codeblock()}
+    <HighlightCompo code={modules['./md/sort-columns.md'] as string} />
   {/snippet}
 </CodeWrapper>
 
