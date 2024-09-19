@@ -138,7 +138,7 @@
       checked: true
     },
     sidebar: {
-      checked: true,
+      checked: true
       // problems: ''
     },
     skeleton: {
