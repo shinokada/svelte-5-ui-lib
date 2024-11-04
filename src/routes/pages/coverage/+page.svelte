@@ -167,7 +167,7 @@
     },
     tooltip: {
       checked: true,
-      problems: "apply floating-ui"
+      // problems: "apply floating-ui"
     },
     video: {
       checked: true

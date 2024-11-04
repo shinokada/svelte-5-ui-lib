@@ -1,11 +1,11 @@
-import Modal from "./Modal.svelte";
 import type { Snippet } from "svelte";
 import type { HTMLAttributes } from "svelte/elements";
 import type { TransitionFunc, ParamsType } from "../types";
+import Modal from "./Modal.svelte";
 import { modal } from "./theme";
 
 type WidthType = "md" | "sm" | "lg" | "xl" | "xs" | undefined;
-type PosisionType = "top-left" | "top-center" | "top-right" | "center-left" | "center" | "center-right" | "bottom-left" | "bottom-center" | "bottom-right" | "default" | undefined;
+type PositionType = "top-left" | "top-center" | "top-right" | "center-left" | "center" | "center-right" | "bottom-left" | "bottom-center" | "bottom-right" | "default" | undefined;
 
 interface ModalProps extends HTMLAttributes<HTMLDivElement> {
   children: Snippet;
@@ -23,15 +23,14 @@ interface ModalProps extends HTMLAttributes<HTMLDivElement> {
   bodyClass?: string;
   footerClass?: string;
   outsideClose?: boolean;
-  position?: PosisionType;
+  position?: PositionType;
   size?: WidthType;
   backdrop?: boolean;
   backdropClass?: string;
   rounded?: boolean;
-  // placement?: PlacementType;
   class?: string;
   params?: ParamsType;
   transition?: TransitionFunc;
 }
 
-export { Modal, modal, type ModalProps };
+export { type ModalProps, modal, Modal, type PositionType };

@@ -159,20 +159,3 @@
     {/if}
   </div>
 {/if}
-
-<!--
-@component
-[Go to docs](https://svelte-5-ui-lib.codewithshin.com/)
-## Props
-@props: children: Snippet;
-@props:color: any = "default";
-@props:showOn: any = "hover";
-@props:arrow: any = true;
-@props:offset: any = 8;
-@props:triggeredBy: any;
-@props:reference: any;
-@props:position: any = "top" as Placement;
-@props:strategy: any = "absolute";
-@props:class: string;
-@props:visible: any = false;
--->

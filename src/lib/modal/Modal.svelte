@@ -1,11 +1,37 @@
 <script lang="ts">
+  import { computePosition, flip, shift, offset, type Placement } from '@floating-ui/dom';
   import type { ParamsType } from "$lib/types";
   import CloseButton from "$lib/utils/CloseButton.svelte";
   import { type ModalProps as Props, modal } from ".";
   import { fade } from "svelte/transition";
   import { sineIn } from "svelte/easing";
 
-  let { children, header, footer, title, modalStatus, dismissable = true, closeModal, divClass, contentClass, closeBtnClass, h3Class, headerClass, bodyClass, footerClass, outsideClose = true, size = "md", backdrop = true, backdropClass, position = "center", class: className, params = { duration: 100, easing: sineIn }, transition = fade, rounded = true, ...restProps }: Props = $props();
+  let { 
+    children, 
+    header, 
+    footer, 
+    title, 
+    modalStatus, 
+    dismissable = true, 
+    closeModal, 
+    divClass, 
+    contentClass, 
+    closeBtnClass, 
+    h3Class, 
+    headerClass, 
+    bodyClass, 
+    footerClass, 
+    outsideClose = true, 
+    size = "md", 
+    backdrop = true, 
+    backdropClass, 
+    position = "center",
+    class: className, 
+    params = { duration: 100, easing: sineIn }, 
+    transition = fade, 
+    rounded = true, 
+    ...restProps 
+  }: Props = $props();
 
   const {
     base,
@@ -25,19 +51,124 @@
       rounded
     })
   );
+
+  let modalElement = $state<HTMLDivElement | null>(null);
+  let resizeObserver = $state<ResizeObserver | null>(null);
+
+  // Convert position to Floating UI placement
+  const getPlacement = (pos: string): Placement => {
+    const placementMap: Record<string, Placement> = {
+      'top-left': 'top-start',
+      'top-center': 'top',
+      'top-right': 'top-end',
+      'center-left': 'left',
+      'center-right': 'right',
+      'bottom-left': 'bottom-start',
+      'bottom-center': 'bottom',
+      'bottom-right': 'bottom-end',
+      'center': 'bottom', // fallback to bottom placement for center
+      'default': 'bottom' // fallback to bottom placement for default
+    };
+    return placementMap[pos] || 'bottom';
+  };
+
+  const updatePosition = async () => {
+    if (!modalElement || position === 'center' || position === 'default') return;
+
+    const virtualElement = {
+      getBoundingClientRect() {
+        return {
+          width: 0,
+          height: 0,
+          x: window.innerWidth / 2,
+          y: window.innerHeight / 2,
+          top: window.innerHeight / 2,
+          left: window.innerWidth / 2,
+          right: window.innerWidth / 2,
+          bottom: window.innerHeight / 2
+        };
+      }
+    };
+
+    const { x, y } = await computePosition(virtualElement, modalElement, {
+      placement: getPlacement(position),
+      middleware: [
+        offset(8),
+        flip(),
+        shift({ padding: 8 })
+      ]
+    });
+
+    Object.assign(modalElement.style, {
+      left: `${x}px`,
+      top: `${y}px`,
+      position: 'fixed', // Ensure modal stays fixed
+      transform: 'none'  // Remove any transform that might interfere
+    });
+  };
+
+  // Handle center positioning separately from Floating UI
+  const setCenterPosition = () => {
+    if (!modalElement || (position !== 'center' && position !== 'default')) return;
+    
+    Object.assign(modalElement.style, {
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
+      position: 'fixed'
+    });
+  };
+
+  function handleOutsideClick(event: MouseEvent) {
+    if (outsideClose && modalElement && !modalElement.contains(event.target as Node)) {
+      closeModal?.();
+    }
+  }
+
+  $effect(() => {
+    if (modalStatus && modalElement) {
+      if (position === 'center' || position === 'default') {
+        setCenterPosition();
+      } else {
+        resizeObserver = new ResizeObserver(updatePosition);
+        resizeObserver.observe(document.body);
+        updatePosition();
+      }
+
+      // Add click listener to handle outside clicks
+      if (outsideClose) {
+        document.addEventListener('mousedown', handleOutsideClick);
+      }
+    }
+
+    return () => {
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+        resizeObserver = null;
+      }
+      // Clean up click listener
+      if (outsideClose) {
+        document.removeEventListener('mousedown', handleOutsideClick);
+      }
+    };
+  });
 </script>
 
 {#if modalStatus}
-  {#if backdrop && outsideClose}
-    <div role="presentation" class={backdropCls({ class: backdropClass })} onclick={closeModal}></div>
-  {:else if backdrop && !outsideClose}
-    <div role="presentation" class={backdropCls({ class: backdropClass })}></div>
-  {:else if !backdrop && outsideClose}
-    <div role="presentation" class="fixed start-0 top-0 z-50 h-full w-full" onclick={closeModal}></div>
-  {:else if !backdrop && !outsideClose}
-    <div role="presentation" class="fixed start-0 top-0 z-50 h-full w-full"></div>
-  {/if}
-  <div {...restProps} class={base({ className })} transition:transition={params as ParamsType} tabindex="-1">
+  <!-- Backdrop -->
+  <div 
+    role="presentation" 
+    class={backdrop ? backdropCls({ class: backdropClass }) : "fixed inset-0 z-40"}
+  />
+
+  <!-- Modal -->
+  <div 
+    {...restProps} 
+    bind:this={modalElement}
+    class={base({ className })} 
+    transition:transition={params as ParamsType} 
+    tabindex="-1"
+  >
     <div class={div({ class: divClass })}>
       <div class={content({ class: contentClass })}>
         {#if title || header}
@@ -69,33 +200,3 @@
     </div>
   </div>
 {/if}
-
-<!--
-@component
-[Go to docs](https://svelte-5-ui-lib.codewithshin.com/)
-## Props
-@props: children: Snippet;
-@props:header: Snippet;
-@props:footer: Snippet;
-@props:title: string;
-@props:modalStatus: boolean;
-@props:dismissable: boolean = true;
-@props:closeModal: () => void;
-@props:divClass: string;
-@props:contentClass: string;
-@props:closeBtnClass: string;
-@props:h3Class: string;
-@props:headerClass: string;
-@props:bodyClass: string;
-@props:footerClass: string;
-@props:outsideClose: boolean = true;
-@props:size: "md" | "sm" | "lg" | "xl" | "xs" | undefined = "md";
-@props:backdrop: boolean = true;
-@props:backdropClass: string;
-@props:position: "top-left" | "top-center" | "top-right" | "center-left" | "center" | "center-right" | "bottom-left" | "bottom-center" | "bottom-right" | "default" | undefined = "center";
-@props:class: string;
-@props:params: ParamsType = { duration: 100;
-@props:easing: any;
-@props:transition: TransitionFunc = fade;
-@props:rounded: boolean = true;
--->
