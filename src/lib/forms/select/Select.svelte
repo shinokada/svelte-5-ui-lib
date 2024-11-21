@@ -4,9 +4,10 @@
   let { children, items, value = $bindable(), underline, size = "md", class: className, placeholder = "Choose option ...", ...restProps }: Props<T> = $props();
 
   const selectStyle = $derived(selectCls({ underline, size, className }));
+  const componentSize = $derived(Number(size)??undefined);
 </script>
 
-<select {...restProps} bind:value class={selectStyle}>
+<select {...restProps} bind:value class={selectStyle} size={componentSize}>
   {#if placeholder}
     <option disabled selected value="">{placeholder}</option>
   {/if}
