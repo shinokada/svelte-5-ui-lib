@@ -1,32 +1,46 @@
+<script lang="ts" module>
+  const contextKey = Symbol("tab-context");
+  const setTabContext = (ctx: TabCtxType) => setContext(contextKey, ctx);
+
+  export const getTabContext = () => getContext(contextKey) as ReturnType<typeof setTabContext>;
+</script>
+
 <script lang="ts">
-  import { writable } from "svelte/store";
-  import { setContext } from "svelte";
+  import { getContext, setContext } from "svelte";
   import { type TabsProps as Props, type TabCtxType, tabs } from ".";
 
-  let { children, tabStyle = "none", ulClass, contentClass, divider = true, ...restProps }: Props = $props();
+  let { children, tabStyle = "none", tabSize = "md", ulClass, contentClass, activeClass, inactiveClass, divider = true, ...restProps }: Props = $props();
 
-  const { base, content, divider: dividerClass } = $derived(tabs({ tabStyle, hasDivider: divider }));
+  const { base, active, inactive, content, divider: dividerClass } = $derived(tabs({ tabStyle, tabSize, hasDivider: divider }));
 
   // Generate a unique ID for the tab panel
   const panelId = `tab-panel-${Math.random().toString(36).substring(2)}`;
 
-  const ctx: TabCtxType = {
-    get tabStyle() {
-      return tabStyle;
+  let selectedStore = $state.raw<HTMLElement>();
+
+  setTabContext({
+    get activeClass() {
+      return active({ class: activeClass });
     },
-    selected: writable<HTMLElement>(),
+    get inactiveClass() {
+      return inactive({ class: inactiveClass });
+    },
+    get selected() {
+      return selectedStore;
+    },
+    set selected(v: HTMLElement | undefined) {
+      selectedStore = v;
+    },
     panelId // Add panelId to the context
-  };
+  });
 
   let dividerBool = $derived(["full", "pill"].includes(tabStyle) ? false : divider);
 
-  setContext("ctx", ctx);
-
   function init(node: HTMLElement) {
-    const destroy = ctx.selected.subscribe((x: HTMLElement) => {
-      if (x) node.replaceChildren(x);
+    $effect(() => {
+      if (!selectedStore) return;
+      node.replaceChildren(selectedStore);
     });
-    return { destroy };
   }
 </script>
 
@@ -44,7 +58,10 @@
 ## Props
 @props: children: Snippet;
 @props:tabStyle: "full" | "pill" | "underline" | "none" = "none";
+@props:tabSize: "xs" | "sm" | "md" = "md";
 @props:ulClass: string;
 @props:contentClass: string;
+@props:inactiveClass: string;
+@props:activeClass: string;
 @props:divider: boolean = true;
 -->
