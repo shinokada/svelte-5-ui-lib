@@ -16,6 +16,7 @@ interface SelectProps<T> extends Omit<HTMLSelectAttributes, "size"> {
   underline?: boolean;
   size?: SelectSize;
   placeholder?: string;
+  selectSize?: number;
 }
 
 interface MultiSelectProps<T> extends HTMLAttributes<HTMLDivElement> {
