@@ -17,16 +17,14 @@
 </script>
 
 <svelte:element this={href ? "a" : "div"} {...restProps} {href} class={base({ className })} role={href ? undefined : "presentation"} {onclick}>
-  {#if img}
+  {#if typeof img === "function"}
+    {@render img({ class: image({ class: imgClass }) })}
+  {:else if img}
     <img class={image({ class: imgClass })} src={img.src} alt={img.alt} />
-    <div class={content({ class: contentClass })}>
-      {@render children()}
-    </div>
-  {:else}
-    <div class={content({ class: contentClass })}>
-      {@render children()}
-    </div>
   {/if}
+  <div class={content({ class: contentClass })}>
+    {@render children()}
+  </div>
 </svelte:element>
 
 <!--
