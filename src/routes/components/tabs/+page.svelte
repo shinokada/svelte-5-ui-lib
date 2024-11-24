@@ -37,14 +37,17 @@
 
   let tabStyle: TabsProps["tabStyle"] = $state("none") as NonNullable<TabsProps["tabStyle"]>;
   const tabStyles = Object.keys(tabs.variants.tabStyle);
+  let tabSize: TabsProps["tabSize"] = $state("md") as NonNullable<TabsProps["tabSize"]>;
+  const tabSizes = Object.keys(tabs.variants.tabSize);
 
   // code generator
   let generatedCode = $derived(
     (() => {
       let props = [];
-      if (tabStyle !== "none") props.push(` style="${tabStyle}"`);
+      if (tabStyle !== "none") props.push(` tabStyle="${tabStyle}"`);
+      if (tabSize !== "md") props.push(` tabSize="${tabSize}"`);
 
-      return `<Tab${props}>
+      return `<Tabs${props.join("")}>
   <TabItem open title="Profile">
       <p class="text-sm text-gray-500 dark:text-gray-400">
         <b>Profile:</b>
@@ -111,7 +114,7 @@
 
 <H2>Interactive Tab Builder</H2>
 <CodeWrapper>
-  <Tabs {tabStyle} ulClass={tabStyle === "full" ? "flex flex-nowrap rounded-lg divide-x rtl:divide-x-reverse divide-gray-200 shadow dark:divide-gray-700 space-x-0" : ""}>
+  <Tabs {tabStyle} {tabSize} ulClass={tabStyle === "full" ? "flex flex-nowrap rounded-lg divide-x rtl:divide-x-reverse divide-gray-200 shadow dark:divide-gray-700 space-x-0" : ""}>
     <TabItem open title={tabStyle === "full" ? "" : "Profile"} class={tabStyle === "full" ? "w-full" : ""}>
       {#snippet titleSlot()}Profile{/snippet}
       <p class="text-sm text-gray-500 dark:text-gray-400">
@@ -156,6 +159,12 @@
       {#if option !== "full"}
         <Radio labelClass="w-24 my-1" name="table_color" bind:group={tabStyle} value={option}>{option}</Radio>
       {/if}
+    {/each}
+  </div>
+  <div class="my-4 flex flex-wrap space-x-4">
+    <Label class="mb-4 w-full font-bold">Size</Label>
+    {#each tabSizes as option}
+      <Radio labelClass="w-24 my-1" name="table_size" bind:group={tabSize} value={option}>{option}</Radio>
     {/each}
   </div>
   {#snippet codeblock()}
