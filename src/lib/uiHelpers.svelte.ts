@@ -1,5 +1,5 @@
-export function uiHelpers() {
-  let isOpen: boolean = $state(false);
+export function uiHelpers(initialValue: boolean = false) {
+  let isOpen: boolean = $state(initialValue);
 
   function toggle() {
     isOpen = !isOpen;

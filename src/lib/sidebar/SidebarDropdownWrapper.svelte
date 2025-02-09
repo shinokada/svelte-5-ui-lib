@@ -15,8 +15,7 @@
 
   const { base, btn, span, svg, ul } = $derived(sidebardropdownwrapper());
 
-  let sidebarDropdown = uiHelpers();
-  sidebarDropdown.isOpen = isOpen;
+  let sidebarDropdown = uiHelpers(isOpen);
   let ctx = getContext<SidebarContext>("sidebarContext") || { isSingle: false };
   let self = {};
 
