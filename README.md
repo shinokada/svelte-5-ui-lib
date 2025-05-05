@@ -1,5 +1,7 @@
 # Svelte 5 UI Lib
 
+**Svelte 5 UI Lib has been moved to [Flowbite Svelte](https://flowbite-svelte.com/)**
+
 Svelte 5 UI Lib is a UI library built from scratch to leverage Svelte 5's runes system, creating smooth, reactive components.
 
 - [Docs](https://svelte-5-ui-lib.codewithshin.com/)
